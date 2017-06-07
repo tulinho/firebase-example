@@ -19,6 +19,9 @@ $(document).ready(function(){
 	let database = firebase.database();
 	let storage = firebase.storage();
 
+	var token = '';
+	var user = '';
+
 	let messageTemplate = document.querySelector('#message-template');
 
 	$('#send-button').click(appendMessage);
@@ -27,7 +30,7 @@ $(document).ready(function(){
 		let textMessage = $('#message').val();
 		if(!!textMessage){
 			database.ref('messages').push({
-				user: 'Anônimo',
+				user: (user.displayName || 'Anônimo'),
 				text: textMessage,
 				color: USER_COLOR
 			});
@@ -50,6 +53,18 @@ $(document).ready(function(){
 		messageTemplate.content.querySelector('.message-span').textContent = message;
 		let clone = document.importNode(messageTemplate.content, true);
 		document.querySelector('#messages-container').appendChild(clone);
+	}
+
+	$('#log-in').click(onLogin);
+
+	function onLogin(){
+		var provider = new firebase.auth.GoogleAuthProvider();
+		provider.addScope('profile');
+		provider.addScope('email');
+		auth.signInWithPopup(provider).then(function(result) {
+			token = result.credential.accessToken;
+			user = result.user;
+		});
 	}
 
 });
