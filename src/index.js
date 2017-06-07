@@ -18,7 +18,7 @@ $(document).ready(function(){
 	}
 
 	function writeMessage(userName, message, userNameColor){
-		messageTemplate.content.querySelector('.name-span').className += (' ' + userNameColor);
+		messageTemplate.content.querySelector('.name-span').className = ('name-span ' + userNameColor);
 		messageTemplate.content.querySelector('.name-highlight').textContent = userName;
 		messageTemplate.content.querySelector('.message-span').textContent = message;
 		let clone = document.importNode(messageTemplate.content, true);
