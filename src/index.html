@@ -33,16 +33,41 @@
 	<footer class="light-blue">
 		<div class="container">
 			<div id="form-container" class="row">
-		        <div class="input-field col m9 s12 text-white">
+		        <div class="col m8 input-field text-white">
 		          <textarea id="message" class="materialize-textarea white-text"></textarea>
 		          <label for="message" class="white-text">Mensagem</label>
 		        </div>	
-		        <div class="col m3 s12 valign-wrapper center-align">
+		        <div class="col m2 valign-wrapper right-align">
 		        	<button id="send-button" class="waves-effect waves-light btn orange">ENVIAR</button>
+		        </div>
+		        <div class="col m2 valign-wrapper right-align">
+		        	<button id="upload-file" class="btn-floating btn-large right-align waves-effect waves-light light-blue" data-target="#modal-upload-file">
+						<i class="material-icons">description</i>
+					</a>
 		        </div>
 			</div>
 		</div>
 	</footer>
+	<!-- Modal Structure -->
+	<div id="modal-upload-file" class="modal">
+		<div class="modal-content">
+			<h4>Subir Arquivo</h4>
+			<form action="#">
+				<div class="file-field input-field">
+					<div class="btn">
+						<span>Arquivo</span>
+						<input id="file-input" type="file">
+					</div>
+					<div class="file-path-wrapper">
+						<input class="file-path validate" type="text">
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button id="modal-close" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+		</div>
+	</div>
 	<template id="message-template" type="html">
 		<div class="row">
 			<div class="col l8 m10 s12">

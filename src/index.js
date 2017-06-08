@@ -67,4 +67,47 @@ $(document).ready(function(){
 		});
 	}
 
+	$('#upload-file').click(showModal);
+
+	function showModal(){
+		$('#modal-upload-file').show();
+	}
+
+	$('#modal-close').click(hideModal);
+
+	function hideModal(){
+		$('#modal-upload-file').hide();	
+	}
+
+	$('#file-input').change(onFileSelect);
+
+	function onFileSelect(){
+		if(!!$('#file-input').val()){
+			let file = $('#file-input')[0].files.item(0);
+			taskUpload = storage.ref().child('images/' + file.name).put(file);
+			taskUpload.then(function(fileSnapShot){
+				var file = fileSnapShot.metadata;
+				database.ref('images').push({
+					name : file.name,
+					url : file.downloadURLs[0]
+				});
+			});
+		}
+	}
+
+	database.ref('/images').on('child_added', onImageAdded);
+
+	function onImageAdded(imageSnapShot){
+		let image = imageSnapShot.val();
+		storage.ref().child('images/' + image.name).getDownloadURL().then(function(url) {
+			let imagem = document.createElement('img');
+			imagem.src = url;
+		  document.querySelector('#messages-container').appendChild(imagem);
+		});
+	}
+
+	// storage.ref('/images').on('child_added', function(fileSnapShot){
+	// 	console.log(fileSnapShot.val());
+	// })
+
 });
