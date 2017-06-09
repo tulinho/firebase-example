@@ -19,7 +19,6 @@ $(document).ready(function(){
 	let database = firebase.database();
 	let storage = firebase.storage();
 
-	var token = '';
 	var user = '';
 
 	let messageTemplate = document.querySelector('#message-template');
@@ -38,6 +37,7 @@ $(document).ready(function(){
 		}
 	}
 
+	/* Database access */
 	database.ref('/messages').on('child_added', onChildAdded);
 
 	function onChildAdded(messageSnapshot){
@@ -59,16 +59,32 @@ $(document).ready(function(){
 		$('#messages-container').scrollTop(height);
 	}
 
+
+	/* User authentication */
 	$('#log-in').click(onLogin);
 
 	function onLogin(){
 		var provider = new firebase.auth.GoogleAuthProvider();
 		provider.addScope('profile');
 		provider.addScope('email');
-		auth.signInWithPopup(provider).then(function(result) {
-			token = result.credential.accessToken;
-			user = result.user;
-		});
+		auth.signInWithPopup(provider).then(onLoginSucceed);
+	}
+
+	function onLoginSucceed(result) {
+		user = result.user;
+	}
+
+	firebase.auth().onAuthStateChanged(onAuthStateChanged);
+
+	function onAuthStateChanged(loggedUser) {
+		if(!!loggedUser){
+			user = loggedUser;
+			$('#log-in').attr('disabled', true);
+		}
+		else{
+			user = '';
+			$('#log-in').attr('disabled', false);
+		}
 	}
 
 	$('#upload-file').click(showModal);
