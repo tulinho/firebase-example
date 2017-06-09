@@ -79,11 +79,11 @@ $(document).ready(function(){
 	function onAuthStateChanged(loggedUser) {
 		if(!!loggedUser){
 			user = loggedUser;
-			$('#log-in').attr('disabled', true);
+			$('#log-in').hide();
 		}
 		else{
 			user = '';
-			$('#log-in').attr('disabled', false);
+			$('#log-in').show();
 		}
 	}
 
