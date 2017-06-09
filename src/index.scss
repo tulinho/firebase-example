@@ -51,6 +51,17 @@ main {
 	background-color: rgba(41, 182, 246, 0.5);
 }
 
+#messages-container img{
+	max-width: 100%;
+}
+
+@media #{$medium-and-up}{	
+	nav .btn-floating > i {
+	    font-size: 1.6rem;
+	    line-height: 37px;
+	}
+}
+
 @media #{$small-and-down} {
 	#send-button{
 		margin: 0px auto;
