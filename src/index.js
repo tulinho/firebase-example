@@ -19,6 +19,8 @@ $(document).ready(function(){
 	let database = firebase.database();
 	let storage = firebase.storage();
 
+	var user = '';
+
 	let messageTemplate = document.querySelector('#message-template');
 
 	$('#send-button').click(appendMessage);
@@ -27,7 +29,7 @@ $(document).ready(function(){
 		let textMessage = $('#message').val();
 		if(!!textMessage){
 			database.ref('messages').push({
-				user: 'Anônimo',
+				user: (user.displayName || 'Anônimo'),
 				text: textMessage,
 				color: USER_COLOR
 			});
@@ -35,13 +37,13 @@ $(document).ready(function(){
 		}
 	}
 
+	/* Database access */
 	database.ref('/messages').on('child_added', onChildAdded);
 
 	function onChildAdded(messageSnapshot){
 		let message = messageSnapshot.val();
 		writeMessage(message.user, message.text, message.color);
-		let height = $('#messages-container')[0].scrollHeight;
-		$('#messages-container').scrollTop(height);
+		scrollMessageContainer();
 	}
 
 	function writeMessage(userName, message, userNameColor){
@@ -50,6 +52,94 @@ $(document).ready(function(){
 		messageTemplate.content.querySelector('.message-span').textContent = message;
 		let clone = document.importNode(messageTemplate.content, true);
 		document.querySelector('#messages-container').appendChild(clone);
+	}
+
+	function scrollMessageContainer(){		
+		let height = $('#messages-container')[0].scrollHeight;
+		$('#messages-container').scrollTop(height);
+	}
+
+	/* User authentication */
+	$('#log-in').click(onLogin);
+
+	function onLogin(){
+		var provider = new firebase.auth.GoogleAuthProvider();
+		provider.addScope('profile');
+		provider.addScope('email');
+		auth.signInWithPopup(provider).then(onLoginSucceed);
+	}
+
+	function onLoginSucceed(result) {
+		user = result.user;
+	}
+
+	firebase.auth().onAuthStateChanged(onAuthStateChanged);
+
+	function onAuthStateChanged(loggedUser) {
+		if(!!loggedUser){
+			user = loggedUser;
+			$('#log-in').hide();
+		}
+		else{
+			user = '';
+			$('#log-in').show();
+		}
+	}
+
+	$('#upload-file').click(showModal);
+
+	function showModal(){
+		$('#modal-upload-file').show();
+	}
+
+	$('#modal-close').click(hideModal);
+
+	function hideModal(){
+		$('#modal-upload-file').hide();	
+	}
+
+	$('#file-input').change(onFileSelect);
+
+	function onFileSelect(){
+		if(!!$('#file-input').val()){
+			let file = $('#file-input')[0].files.item(0);
+			storeFile(file)
+			.then(saveFileStorageLocation)
+			.then(onFileSaved);
+		}
+	}
+
+	function storeFile(file){
+		return storage.ref().child('images/' + file.name).put(file);
+	}
+
+	function saveFileStorageLocation(fileSnapShot){		
+		var file = fileSnapShot.metadata;
+		return database.ref('images').push({
+			name : file.name,
+			url : file.downloadURLs[0]
+		});
+	}
+
+	function onFileSaved(){
+		$('#file-input').val('');
+		$('#modal-upload-file').hide();			
+	}
+
+	database.ref('/images').on('child_added', onImageAdded);
+
+	function onImageAdded(imageSnapShot){
+		let image = imageSnapShot.val();
+		storage.ref().child('images/' + image.name)
+		.getDownloadURL()
+		.then(addImageToMessageContainser);
+	}
+
+	function addImageToMessageContainser(url) {
+		let imagem = document.createElement('img');
+		imagem.src = url;
+		document.querySelector('#messages-container').appendChild(imagem);
+		scrollMessageContainer();
 	}
 
 });

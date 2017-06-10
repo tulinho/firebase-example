@@ -12,7 +12,12 @@
 	<header>
 		<nav class="light-blue lighten-1" role="navigation">
 			<div class="nav-wrapper container">
-				<a id="logo-container" href="#" class="brand-logo">Chat App</a>			
+				<a id="logo-container" href="#" class="brand-logo">Chat App</a>		
+				<div class="right-align">
+					<a id="log-in" class="btn-floating btn-medium right-align waves-effect waves-light light-blue">
+						<i class="material-icons">person</i>
+					</a>
+				</div>	
 			</div>
 		</nav>
 	</header>
@@ -26,18 +31,43 @@
 	</main>
 	<br>
 	<footer class="light-blue">
-		<div class="container">
+		<div class="container" style=" margin-top: 10px;">
 			<div id="form-container" class="row">
-		        <div class="input-field col m9 s12 text-white">
-		          <textarea id="message" class="materialize-textarea white-text"></textarea>
+		        <div class="col m8 s12 input-field text-white">
+		          <input type="text" id="message" class="materialize-textarea white-text" rows="1"></input>
 		          <label for="message" class="white-text">Mensagem</label>
 		        </div>	
-		        <div class="col m3 s12 valign-wrapper center-align">
+		        <div class="col m2 s8 valign-wrapper right-align" style=" height: 100px;">
 		        	<button id="send-button" class="waves-effect waves-light btn orange">ENVIAR</button>
+		        </div>
+		        <div class="col m2 s4 valign-wrapper right-align"  style=" height: 100px;">
+		        	<button id="upload-file" class="btn-floating btn-large right-align waves-effect waves-light light-blue" data-target="#modal-upload-file">
+						<i class="material-icons">description</i>
+					</a>
 		        </div>
 			</div>
 		</div>
 	</footer>
+	<!-- Modal Structure -->
+	<div id="modal-upload-file" class="modal">
+		<div class="modal-content">
+			<h4>Subir Arquivo</h4>
+			<form action="#">
+				<div class="file-field input-field">
+					<div class="btn">
+						<span>Arquivo</span>
+						<input id="file-input" type="file">
+					</div>
+					<div class="file-path-wrapper">
+						<input class="file-path validate" type="text">
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button id="modal-close" class="modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+		</div>
+	</div>
 	<template id="message-template" type="html">
 		<div class="row">
 			<div class="col l8 m10 s12">
@@ -49,7 +79,8 @@
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/js/materialize.min.js"></script>	
 	<script src="https://www.gstatic.com/firebasejs/4.1.1/firebase.js"></script>
-	<script src="app.bundle.js"></script>
+	<script src="template-polyfill.js"></script>
+	<script src="main.bundle.js"></script>
 </body>
 
 </html>

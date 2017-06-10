@@ -21,13 +21,13 @@ main {
 	font-size: inherit;
 }
 #form-container{	
-    display: flex;
-    flex-direction: row;
+    /*display: flex;
+    flex-direction: row;*/
 }
 
 
 #messages-container{
-    height: calc(100vh - 190px);
+    height: calc(100vh - 300px);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -51,8 +51,22 @@ main {
 	background-color: rgba(41, 182, 246, 0.5);
 }
 
+#messages-container img{
+	max-width: 100%;
+}
+
+@media #{$medium-and-up}{	
+	nav .btn-floating > i {
+	    font-size: 1.6rem;
+	    line-height: 37px;
+	}
+}
+
 @media #{$small-and-down} {
 	#send-button{
 		margin: 0px auto;
+	}
+	#messages-container{
+	    height: calc(50vh);
 	}
 }
