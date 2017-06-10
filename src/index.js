@@ -43,8 +43,7 @@ $(document).ready(function(){
 	function onChildAdded(messageSnapshot){
 		let message = messageSnapshot.val();
 		writeMessage(message.user, message.text, message.color);
-		let height = $('#messages-container')[0].scrollHeight;
-		$('#messages-container').scrollTop(height);
+		scrollMessageContainer();
 	}
 
 	function writeMessage(userName, message, userNameColor){
@@ -55,6 +54,10 @@ $(document).ready(function(){
 		document.querySelector('#messages-container').appendChild(clone);
 	}
 
+	function scrollMessageContainer(){		
+		let height = $('#messages-container')[0].scrollHeight;
+		$('#messages-container').scrollTop(height);
+	}
 
 	/* User authentication */
 	$('#log-in').click(onLogin);
@@ -81,6 +84,62 @@ $(document).ready(function(){
 			user = '';
 			$('#log-in').show();
 		}
+	}
+
+	$('#upload-file').click(showModal);
+
+	function showModal(){
+		$('#modal-upload-file').show();
+	}
+
+	$('#modal-close').click(hideModal);
+
+	function hideModal(){
+		$('#modal-upload-file').hide();	
+	}
+
+	$('#file-input').change(onFileSelect);
+
+	function onFileSelect(){
+		if(!!$('#file-input').val()){
+			let file = $('#file-input')[0].files.item(0);
+			storeFile(file)
+			.then(saveFileStorageLocation)
+			.then(onFileSaved);
+		}
+	}
+
+	function storeFile(file){
+		return storage.ref().child('images/' + file.name).put(file);
+	}
+
+	function saveFileStorageLocation(fileSnapShot){		
+		var file = fileSnapShot.metadata;
+		return database.ref('images').push({
+			name : file.name,
+			url : file.downloadURLs[0]
+		});
+	}
+
+	function onFileSaved(){
+		$('#file-input').val('');
+		$('#modal-upload-file').hide();			
+	}
+
+	database.ref('/images').on('child_added', onImageAdded);
+
+	function onImageAdded(imageSnapShot){
+		let image = imageSnapShot.val();
+		storage.ref().child('images/' + image.name)
+		.getDownloadURL()
+		.then(addImageToMessageContainser);
+	}
+
+	function addImageToMessageContainser(url) {
+		let imagem = document.createElement('img');
+		imagem.src = url;
+		document.querySelector('#messages-container').appendChild(imagem);
+		scrollMessageContainer();
 	}
 
 });
